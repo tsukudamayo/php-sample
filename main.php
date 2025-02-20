@@ -1,3 +1,5 @@
+
+
 <?php
 session_start();
 
@@ -26,4 +28,38 @@ $quotes = [
 
 $random_quote = $quotes[array_rand($quotes)];
 echo "Quote of the moment: \"$random_quote\"\n";
+
+// シンプルな電卓機能
+if (isset($_GET['num1']) && isset($_GET['num2']) && isset($_GET['operation'])) {
+    $num1 = floatval($_GET['num1']);
+    $num2 = floatval($_GET['num2']);
+    $operation = $_GET['operation'];
+    $result = null;
+
+    switch ($operation) {
+        case 'add':
+            $result = $num1 + $num2;
+            break;
+        case 'subtract':
+            $result = $num1 - $num2;
+            break;
+        case 'multiply':
+            $result = $num1 * $num2;
+            break;
+        case 'divide':
+            if ($num2 != 0) {
+                $result = $num1 / $num2;
+            } else {
+                $result = "Error: Division by zero!";
+            }
+            break;
+        default:
+            $result = "Error: Invalid operation!";
+    }
+
+    echo "Calculation Result: $result\n";
+} else {
+    echo "To use the calculator, add ?num1=5&num2=3&operation=add to the URL.\n";
+    echo "Operations: add, subtract, multiply, divide.\n";
+}
 ?>
