@@ -1,5 +1,3 @@
-
-
 <?php
 session_start();
 
@@ -14,7 +12,6 @@ if (!isset($_SESSION['visit_count'])) {
 } else {
     $_SESSION['visit_count']++;
 }
-
 echo "You have visited this page " . $_SESSION['visit_count'] . " times.\n";
 
 // ランダムな名言を表示
@@ -61,5 +58,32 @@ if (isset($_GET['num1']) && isset($_GET['num2']) && isset($_GET['operation'])) {
 } else {
     echo "To use the calculator, add ?num1=5&num2=3&operation=add to the URL.\n";
     echo "Operations: add, subtract, multiply, divide.\n";
+}
+
+// 簡易お問い合わせフォーム
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POST['message'])) {
+    $name = htmlspecialchars($_POST['name']);
+    $message = htmlspecialchars($_POST['message']);
+
+    if (!isset($_SESSION['messages'])) {
+        $_SESSION['messages'] = [];
+    }
+
+    $_SESSION['messages'][] = ["name" => $name, "message" => $message];
+}
+
+// メッセージ表示
+echo "<h2>Contact Form</h2>";
+echo "<form method='POST'>";
+echo "Name: <input type='text' name='name' required><br>";
+echo "Message: <input type='text' name='message' required><br>";
+echo "<input type='submit' value='Send'>";
+echo "</form>";
+
+if (isset($_SESSION['messages']) && count($_SESSION['messages']) > 0) {
+    echo "<h3>Message History</h3>";
+    foreach ($_SESSION['messages'] as $msg) {
+        echo "<p><strong>{$msg['name']}:</strong> {$msg['message']}</p>";
+    }
 }
 ?>
