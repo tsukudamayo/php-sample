@@ -1,36 +1,36 @@
 <?php
 session_start();
 
-echo "hello, world!\n";
+echo "Hello, World!\n";
 
 // 現在の日付と時刻を表示
-echo "current date and time: " . date("y-m-d h:i:s") . "\n";
+echo "Current date and time: " . date("Y-m-d H:i:s") . "\n";
 
 // 訪問回数をカウント
-if (!isset($_session['visit_count'])) {
-    $_session['visit_count'] = 1;
+if (!isset($_SESSION['visit_count'])) {
+    $_SESSION['visit_count'] = 1;
 } else {
-    $_session['visit_count']++;
+    $_SESSION['visit_count']++;
 }
-echo "you have visited this page " . $_session['visit_count'] . " times.\n";
+echo "You have visited this page " . $_SESSION['visit_count'] . " times.\n";
 
 // ランダムな名言を表示
 $quotes = [
-    "the only limit to our realization of tomorrow is our doubts of today. - franklin d. roosevelt",
-    "life is 10% what happens to us and 90% how we react to it. - charles r. swindoll",
-    "success is not final, failure is not fatal: it is the courage to continue that counts. - winston churchill",
-    "do what you can, with what you have, where you are. - theodore roosevelt",
-    "believe you can and you're halfway there. - theodore roosevelt"
+    "The only limit to our realization of tomorrow is our doubts of today. - Franklin D. Roosevelt",
+    "Life is 10% what happens to us and 90% how we react to it. - Charles R. Swindoll",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill",
+    "Do what you can, with what you have, where you are. - Theodore Roosevelt",
+    "Believe you can and you're halfway there. - Theodore Roosevelt"
 ];
 
 $random_quote = $quotes[array_rand($quotes)];
-echo "quote of the moment: \"$random_quote\"\n";
+echo "Quote of the moment: \"$random_quote\"\n";
 
 // シンプルな電卓機能
-if (isset($_get['num1']) && isset($_get['num2']) && isset($_get['operation'])) {
-    $num1 = floatval($_get['num1']);
-    $num2 = floatval($_get['num2']);
-    $operation = $_get['operation'];
+if (isset($_GET['num1']) && isset($_GET['num2']) && isset($_GET['operation'])) {
+    $num1 = floatval($_GET['num1']);
+    $num2 = floatval($_GET['num2']);
+    $operation = $_GET['operation'];
     $result = null;
 
     switch ($operation) {
@@ -47,16 +47,67 @@ if (isset($_get['num1']) && isset($_get['num2']) && isset($_get['operation'])) {
             if ($num2 != 0) {
                 $result = $num1 / $num2;
             } else {
-                $result = "error: division by zero!";
+                $result = "Error: Division by zero!";
             }
             break;
         default:
-            $result = "error: invalid operation!";
+            $result = "Error: Invalid operation!";
     }
 
-    echo "calculation result: $result\n";
+    echo "Calculation Result: $result\n";
 } else {
-    echo "to use the calculator, add ?num1=5&num2=3&operation=add to the url.\n";
-    echo "operations: add, subtract, multiply, divide.\n";
+    echo "To use the calculator, add ?num1=5&num2=3&operation=add to the URL.\n";
+    echo "Operations: add, subtract, multiply, divide.\n";
+}
+
+// 簡易お問い合わせフォーム
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['name']) && isset($_POST['message'])) {
+    $name = htmlspecialchars($_POST['name']);
+    $message = htmlspecialchars($_POST['message']);
+
+    if (!isset($_SESSION['messages'])) {
+        $_SESSION['messages'] = [];
+    }
+
+    $_SESSION['messages'][] = ["name" => $name, "message" => $message];
+}
+
+// メッセージ表示
+echo "<h2>Contact Form</h2>";
+echo "<form method='POST'>";
+echo "Name: <input type='text' name='name' required><br>";
+echo "Message: <input type='text' name='message' required><br>";
+echo "<input type='submit' value='Send'>";
+echo "</form>";
+
+if (isset($_SESSION['messages']) && count($_SESSION['messages']) > 0) {
+    echo "<h3>Message History</h3>";
+    foreach ($_SESSION['messages'] as $msg) {
+        echo "<p><strong>{$msg['name']}:</strong> {$msg['message']}</p>";
+    }
+}
+
+// 天気情報取得機能（ダミーデータ）
+if (isset($_GET['city'])) {
+    $city = htmlspecialchars($_GET['city']);
+    $weather_data = [
+        "Tokyo" => ["temp" => "15°C", "condition" => "Sunny"],
+        "New York" => ["temp" => "10°C", "condition" => "Cloudy"],
+        "London" => ["temp" => "7°C", "condition" => "Rainy"],
+        "Paris" => ["temp" => "9°C", "condition" => "Windy"],
+        "Sydney" => ["temp" => "22°C", "condition" => "Clear"],
+    ];
+
+    if (array_key_exists($city, $weather_data)) {
+        echo "<h2>Weather in $city</h2>";
+        echo "Temperature: " . $weather_data[$city]['temp'] . "<br>";
+        echo "Condition: " . $weather_data[$city]['condition'] . "<br>";
+    } else {
+        echo "<h2>Weather in $city</h2>";
+        echo "Sorry, no weather data available.<br>";
+    }
+} else {
+    echo "<h2>Weather Check</h2>";
+    echo "To check the weather, add ?city=Tokyo to the URL.<br>";
 }
 ?>

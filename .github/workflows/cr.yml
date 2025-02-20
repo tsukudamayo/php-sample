@@ -42,3 +42,4 @@ jobs:
           temperature: 1
           max_tokens: 8192
           MAX_PATCH_LENGTH: 8192
+          INCLUDE_PATTERNS: "*.php"
